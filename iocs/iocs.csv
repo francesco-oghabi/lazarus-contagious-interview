@@ -1,0 +1,14 @@
+type,value,context,note
+ipv4,216.250.251.187,c2,Lazarus Contagious Interview C2
+port,1224,c2,characteristic C2 port
+url,http://216.250.251.187:1224/api/checkStatus,c2,beacon + stage2 delivery endpoint
+uri-path,/api/checkStatus,c2,
+http-param,processInfo,exfil,carries JSON.stringify(process.env)
+http-param,sysInfo,exfil,host profiling data
+http-param,tid,campaign,campaign id parameter
+campaign-id,now it time to get everything,campaign,decoded from tid
+base64,aHR0cDovLzIxNi4yNTAuMjUxLjE4NzoxMjI0L2FwaS9jaGVja1N0YXR1cw==,c2,base64 of C2 url
+base64,bm93IGl0IHRpbWUgdG8gZ2V0IGV2ZXJ5dGhpbmc=,campaign,base64 of campaign id
+filename,routes/api/auth.js,host,trojanized file (payload at line 17)
+behavior,node process outbound to 216.250.251.187:1224,host,beacon every 5000ms
+technique,eval of HTTP response body,host,in-memory stage2 execution

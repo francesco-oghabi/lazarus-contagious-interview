@@ -1,311 +1,64 @@
-#  🌐 ChainFlip Labs Platform
+<!-- Language: English (default) · 🇮🇹 Italiano: README.it.md -->
 
-
-# 🚀 Overview
-
-This is a multi-utility Web3 platform that brings together staking, gaming, sports betting, and education into a single ecosystem.
-The goal is to create an all-in-one hub where users can play, earn, and learn without switching between multiple platforms.
+> # ⛔ DANGER — DO NOT INSTALL OR RUN THIS PROJECT
+> **The code in this repository is live malware.** Do **not** run `npm install`, `npm run dev`, `node server.js`, or any build/install step on a real machine — the payload executes the moment the server starts, with no further interaction.
+> Analyze **only** inside an isolated VM (revertible snapshot, no credentials, monitored or disconnected network). Samples in [`samples/`](./samples/) are isolated as `.txt` — do not rename or execute them. See [SECURITY.md](./SECURITY.md).
 
 ---
 
-# ✨ Features
+# 🛑 Lazarus "Contagious Interview" — ChainFlip Labs Platform (Trojanized Repo)
 
-- 🌌 Open World Metaverse
-- 🎮 Multiplayer Gameplay
-- 🔗 Solana Wallet Integration
-- 🪙 NFT Asset Ownership
-- 🛒 NFT Marketplace
-- ⚡ Real-Time Multiplayer Sync
-- 💬 Live Chat & Social Features
-- 🏆 Global Leaderboards
-- 📊 Player Statistics
-- 🤖 AI-Powered Systems
-- 🎨 Modern Responsive UI
-- ☁️ Cloud-Ready Infrastructure
-- 🐳 Docker Deployment Support
+**Threat-intelligence dossier — defensive / educational use only.**
+
+This repository documents a real sample of the North-Korean **Lazarus / Contagious Interview** campaign (aka *DeceptiveDevelopment*, *DEV#POPPER*). The malware is delivered as a fake job-interview *coding assignment*: a seemingly harmless "Web3 poker / ChainFlip Labs" project with a malicious loader hidden inside the server code.
+
+🇮🇹 **Versione italiana:** [README.it.md](./README.it.md)
 
 ---
 
-# 🧠 Tech Stack
+## TL;DR
 
-## Frontend
-- React 19
-- Next.js 16
-- TypeScript
-- Tailwind CSS
-- Framer Motion
-- Three.js
-- Babylon.js
+| | |
+|---|---|
+| **Family** | Obfuscated JS loader (BeaverTail-style) → second-stage stealer (InvisibleFerret) |
+| **Lure** | Fake Web3/poker project "ChainFlip Labs" handed out during an interview |
+| **Infected file** | [`routes/api/auth.js`](./routes/api/auth.js) — payload appended at line 17 |
+| **C2** | `hxxp://216[.]250[.]251[.]187:1224/api/checkStatus` |
+| **Trigger** | Runs on `require()` of the router → at server startup |
+| **Impact** | `process.env` theft (secrets), RCE via `eval`, browser password/cookie & crypto-wallet theft |
 
-## Backend
-- Node.js
-- Express.js
-- Socket.IO
-- TypeScript
-
-## Blockchain
-- Polygon
-- Web3.js
-- Wallet Adapter
-
-## Database
-- MongoDB
-- Redis
-
-## DevOps
-- Docker
-- AWS
-- Vercel
-- GitHub Actions
-
----
-
-# 📁 Project Structure
-
-```text
-├───.vscode
-├───client
-│   ├───public
-│   └───src
-│       ├───apis
-│       ├───assets
-│       │   ├───fonts
-│       │   ├───game
-│       │   │   ├───cards
-│       │   │   └───cards-svg
-│       │   ├───icons
-│       │   └───img
-│       ├───components
-│       │   ├───buttons
-│       │   ├───cookies
-│       │   ├───decoration
-│       │   ├───forms
-│       │   ├───game
-│       │   │   ├───Betslider
-│       │   │   ├───BrandingImage
-│       │   │   └───Seat
-│       │   ├───icons
-│       │   ├───layout
-│       │   ├───loading
-│       │   ├───logo
-│       │   ├───modals
-│       │   ├───navigation
-│       │   ├───routing
-│       │   ├───typography
-│       │   └───user
-│       ├───context
-│       │   ├───game
-│       │   ├───global
-│       │   ├───localization
-│       │   ├───modal
-│       │   └───websocket
-│       ├───game
-│       ├───helpers
-│       ├───hooks
-│       ├───pages
-│       │   └───ConnectWallet
-│       ├───styles
-│       └───utils
-├───config
-├───controllers
-├───game
-├───middleware
-├───models
-├───routes
-│   └───api
-├───socket
-└───utils
+```
+STAGE 1 (in-repo)              STAGE 2 (delivered via eval)
+routes/api/auth.js     ──►     browser + wallet stealer
+profiles host                  passwords, cookies/sessions,
+steals process.env             MetaMask/Phantom, keychain
+beacons every 5s to C2 ────────► eval(message) from C2
 ```
 
 ---
 
-# 🛠️ Prerequisites
+## 📚 Documentation
 
-Before starting, install the following:
+| Doc | Content |
+|---|---|
+| [docs/01-overview.md](./docs/01-overview.md) | Campaign, context (Contagious Interview), TTPs, attack chain |
+| [docs/02-stage1-loader.md](./docs/02-stage1-loader.md) | Loader analysis (obfuscated → deobfuscated) |
+| [docs/03-stage2-stealer.md](./docs/03-stage2-stealer.md) | Second stage (`eval`/InvisibleFerret), behavior |
+| [docs/04-iocs.md](./docs/04-iocs.md) | Indicators of compromise (explained) |
+| [docs/05-detection.md](./docs/05-detection.md) | Detection: YARA, Sigma, Suricata, hunting |
+| [docs/06-remediation.md](./docs/06-remediation.md) | Remediation & prevention |
+| [docs/07-references.md](./docs/07-references.md) | Sources & attribution |
 
-- Node.js v20+
-- npm or yarn
-- Git
-- MongoDB
-- Polygon
-- MataMask Wallet
+## 🗂️ Artifacts
 
----
-
-# ▶️ Run Development Servers
-
-## Start Backend
-
-```bash
-cd server
-npm run dev
-```
+| Folder | Content |
+|---|---|
+| [`iocs/`](./iocs/) | Machine-readable IOCs: `iocs.csv`, `iocs.json` (STIX 2.1), `network.txt` (blocklist) |
+| [`rules/`](./rules/) | Detection rules: YARA, Sigma, Suricata |
+| [`samples/`](./samples/) | Isolated, defanged payload + original lure README as evidence |
 
 ---
 
-## Start Frontend
+## ⚖️ Disclaimer
 
-```bash
-cd client
-npm run dev
-```
-
----
-
-# 🌐 Access Application
-
-Frontend:
-
-```bash
-http://localhost:3000
-```
-
-Backend API:
-
-```bash
-http://localhost:7777
-```
-
----
-
-# 🔗 Wallet Integration
-
-We supports:
-
-- MetaMask Wallet
-- Coinbase Wallet
-
-Players can securely:
-
-- Sign transactions
-- Own NFTs
-- Trade digital assets
-- Join multiplayer gameplay
-
----
-
-# 🏗️ System Architecture
-
-```text
-+----------------------+
-|      Frontend        |
-| React / Next.js      |
-| Three.js / Babylon   |
-+----------+-----------+
-           |
-           v
-+----------------------+
-|      Backend API     |
-| Node.js / Express    |
-| Socket.IO            |
-+----------+-----------+
-           |
-           v
-+----------------------+
-|      Blockchain      |
-| Solana / Web3.js     |
-| Smart Contracts      |
-+----------+-----------+
-           |
-           v
-+----------------------+
-|      Database        |
-| MongoDB / Redis      |
-+----------------------+
-```
-
----
-
-# 🔐 Security
-
-We follows modern Web3 security practices:
-
-- Wallet-based authentication
-- Encrypted sessions
-- Protected APIs
-- Smart contract verification
-- Rate limiting
-- Infrastructure security
-
----
-
-# 🗺️ Roadmap
-
-- [x] Core Architecture
-- [x] Wallet Integration
-- [x] Multiplayer Support
-- [x] NFT Integration
-- [ ] NFT Marketplace
-- [ ] AI NPC Systems
-- [ ] DAO Governance
-- [ ] Mobile Application
-- [ ] VR Integration
-- [ ] Token Staking
-
----
-
-# 🤝 Contributing
-
-Contributions are welcome.
-
-## Steps
-
-1. Fork repository
-2. Create feature branch
-
-```bash
-git checkout -b feature/amazing-feature
-```
-
-3. Commit changes
-
-```bash
-git commit -m "Add amazing feature"
-```
-
-4. Push branch
-
-```bash
-git push origin feature/amazing-feature
-```
-
-5. Open Pull Request
-
----
-
-# 📄 License
-
-MIT License
-
----
-
-# 👨‍💻 Developer
-
-Built with passion by the our Team.
-
----
-
-# 🙏 Acknowledgements
-
-- Polygon
-- React
-- Next.js
-- Three.js
-- Babylon.js
-- MongoDB
-- Tailwind CSS
-- Open Source Community
-
----
-
-# ⚖️ Disclaimer
-
-This project is provided for educational and development purposes only.
-
-Users are responsible for compliance with local blockchain and digital asset regulations.
-
----
-
-<p align="center">
-  🌌 Built for the Future of Web3 Project 🚀
-</p>
+Published for **defensive, research and educational purposes only**, to enable detection and remediation. Malicious code is included solely in neutralized/isolated form under `samples/`. The authors take no responsibility for misuse. See [SECURITY.md](./SECURITY.md).

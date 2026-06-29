@@ -1,0 +1,5 @@
+# Lazarus / Contagious Interview - ChainFlip Labs - network blocklist
+# Defensive use. Block at firewall / proxy / EDR / DNS.
+216.250.251.187
+216.250.251.187:1224
+http://216.250.251.187:1224/api/checkStatus

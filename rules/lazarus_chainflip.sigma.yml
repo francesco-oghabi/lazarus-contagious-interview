@@ -1,0 +1,33 @@
+title: Lazarus Contagious Interview - Node.js loader C2 beacon
+id: 7b1f0e2a-9c4d-4a1e-8f3b-chainflip0001
+status: experimental
+description: >
+  Detects a node process beaconing to the ChainFlip Labs / Contagious Interview C2
+  (216.250.251.187:1224). The trojanized loader exfiltrates process.env and eval()s
+  a second-stage stealer.
+references:
+  - docs/02-stage1-loader.md
+  - docs/04-iocs.md
+author: threat-intel dossier
+date: 2026-06-29
+tags:
+  - attack.command_and_control
+  - attack.t1071.001
+  - attack.t1059.007
+  - lazarus
+logsource:
+  category: network_connection
+  product: windows   # adapt: also valid via Sysmon EID 3 / EDR / Linux auditd
+detection:
+  selection_ip:
+    DestinationIp: '216.250.251.187'
+  selection_port:
+    DestinationPort: 1224
+  selection_proc:
+    Image|endswith:
+      - '\node.exe'
+      - '/node'
+  condition: (selection_ip or selection_port) and selection_proc
+falsepositives:
+  - Unlikely. Any node process contacting this IP/port should be treated as malicious.
+level: critical

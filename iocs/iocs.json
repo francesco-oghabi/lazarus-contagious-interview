@@ -1,0 +1,43 @@
+{
+  "type": "bundle",
+  "id": "bundle--chainflip-lazarus-contagious-interview",
+  "spec_version": "2.1",
+  "objects": [
+    {
+      "type": "malware",
+      "spec_version": "2.1",
+      "id": "malware--00000000-0000-0000-0000-0000000000a1",
+      "name": "ChainFlip Labs trojanized loader (BeaverTail-style)",
+      "is_family": true,
+      "malware_types": ["downloader", "spyware"],
+      "description": "Obfuscated Node.js loader hidden in routes/api/auth.js. Exfiltrates process.env to C2 and executes an eval-delivered second-stage info-stealer (InvisibleFerret)."
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--00000000-0000-0000-0000-0000000000b1",
+      "name": "C2 URL",
+      "pattern": "[url:value = 'http://216.250.251.187:1224/api/checkStatus']",
+      "pattern_type": "stix",
+      "valid_from": "2026-06-29T00:00:00Z"
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--00000000-0000-0000-0000-0000000000b2",
+      "name": "C2 IP",
+      "pattern": "[ipv4-addr:value = '216.250.251.187']",
+      "pattern_type": "stix",
+      "valid_from": "2026-06-29T00:00:00Z"
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--00000000-0000-0000-0000-0000000000b3",
+      "name": "C2 network endpoint (ip:port)",
+      "pattern": "[network-traffic:dst_ref.value = '216.250.251.187' AND network-traffic:dst_port = 1224]",
+      "pattern_type": "stix",
+      "valid_from": "2026-06-29T00:00:00Z"
+    }
+  ]
+}
