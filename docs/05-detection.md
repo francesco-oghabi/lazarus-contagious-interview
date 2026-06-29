@@ -1,53 +1,55 @@
+<!-- 🇬🇧 English (default) · 🇮🇹 Italiano: 05-detection.it.md -->
+
 # 05 — Detection & Hunting
 
-Regole complete in [`../rules/`](../rules/). Qui il razionale e le query di hunting.
+Complete rules in [`../rules/`](../rules/). This page covers the rationale and the hunting queries.
 
 ## YARA — [`rules/lazarus_chainflip_loader.yar`](../rules/lazarus_chainflip_loader.yar)
 
-Individua il loader statico in file JS sorgente. Combina più indicatori per ridurre i falsi positivi:
-- base64 dell'URL C2 e/o del `tid`;
-- pattern `processInfo` + `eval(`;
-- IP/porta del C2 in chiaro;
-- marker di offuscamento `_0x`.
+Detects the static loader in JS source files. It combines multiple indicators to reduce false positives:
+- base64 of the C2 URL and/or of the `tid`;
+- `processInfo` + `eval(` pattern;
+- cleartext C2 IP/port;
+- `_0x` obfuscation marker.
 
-Pensata per scansione di repo, pacchetti npm, allegati e snapshot di filesystem.
+Designed for scanning repos, npm packages, attachments, and filesystem snapshots.
 
 ## Sigma — [`rules/lazarus_chainflip.sigma.yml`](../rules/lazarus_chainflip.sigma.yml)
 
-Detection comportamentale su log di processo/EDR:
-- processo `node` che stabilisce connessioni in uscita verso `216.250.251.187` o porta `1224`;
-- da mappare sul proprio backend (Sysmon EventID 3, EDR network telemetry).
+Behavioral detection on process/EDR logs:
+- `node` process establishing outbound connections to `216.250.251.187` or port `1224`;
+- to be mapped to your own backend (Sysmon EventID 3, EDR network telemetry).
 
 ## Suricata/Snort — [`rules/lazarus_chainflip.suricata.rules`](../rules/lazarus_chainflip.suricata.rules)
 
-Detection di rete:
-- richiesta HTTP verso l'IP/porta del C2 con URI `/api/checkStatus`;
-- presenza del parametro `processInfo=` nella query (esfiltrazione `process.env`).
+Network detection:
+- HTTP request to the C2 IP/port with URI `/api/checkStatus`;
+- presence of the `processInfo=` parameter in the query (exfiltration of `process.env`).
 
-## Query di hunting (adatta alla tua piattaforma)
+## Hunting queries (adapt to your platform)
 
-**Connessioni di rete (EDR/Sysmon):**
+**Network connections (EDR/Sysmon):**
 ```
 process_name = "node"  AND  (dest_ip = "216.250.251.187"  OR  dest_port = 1224)
 ```
 
-**Grep su sorgenti / repo / dipendenze:**
+**Grep over sources / repos / dependencies:**
 ```bash
 grep -rIlE "processInfo|checkStatus|216\.250\.251\.187|aHR0cDovLzIxNi4yNTAuMjUx|bm93IGl0IHRpbWUgdG8" .
 
-# loader offuscato generico: eval su risposta + marker _0x in fondo a un file
+# generic obfuscated loader: eval over a response + _0x marker at the end of a file
 grep -rIlE "eval\(" --include='*.js' . | xargs -r grep -lE "_0x[0-9a-f]{4,}"
 ```
 
-**DNS/proxy:** allarme su qualsiasi richiesta verso `216.250.251.187:1224`.
+**DNS/proxy:** alert on any request to `216.250.251.187:1224`.
 
-## Triage rapido di un "assignment" sospetto
+## Quick triage of a suspicious "assignment"
 
-1. Cerca **righe anomalmente lunghe** o con molto whitespace iniziale in fondo ai file:
+1. Look for **abnormally long lines** or lines with a lot of leading whitespace at the end of files:
    ```bash
    for f in $(git ls-files '*.js'); do awk -v F="$f" 'length>1000{print F":"NR" ("length")"}' "$f"; done
    ```
-   (Escludi i falsi positivi SVG/minified — vedi [04-iocs.md](./04-iocs.md).)
-2. Cerca `eval(`, `Function(`, `child_process`, `require('os')` accostati a `fetch`/`http`.
-3. Cerca blob base64 lunghi e decodificali prima di eseguire qualsiasi cosa.
-4. Mai eseguire fuori da una VM isolata.
+   (Exclude SVG/minified false positives — see [04-iocs.md](./04-iocs.md).)
+2. Look for `eval(`, `Function(`, `child_process`, `require('os')` placed next to `fetch`/`http`.
+3. Look for long base64 blobs and decode them before running anything.
+4. Never run outside an isolated VM.

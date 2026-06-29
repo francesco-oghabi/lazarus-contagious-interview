@@ -1,28 +1,30 @@
-# 07 — Riferimenti & Attribuzione
+<!-- 🇬🇧 English (default) · 🇮🇹 Italiano: 07-references.it.md -->
 
-## Attribuzione
+# 07 — References & Attribution
 
-- **Attore**: Lazarus Group (DPRK), cluster *Famous Chollima* / *DeceptiveDevelopment*.
-- **Campagna**: *Contagious Interview* (alias *DEV#POPPER*).
-- **Catena malware comunemente associata**: loader JS (famiglia *BeaverTail*) → stealer/backdoor di seconda fase (*InvisibleFerret*).
+## Attribution
 
-> L'attribuzione si basa su TTP e infrastruttura coerenti con la campagna pubblicamente documentata: finto colloquio + progetto trojanizzato, loader JS offuscato che esfiltra `process.env` ed esegue una seconda fase via `eval`, porta C2 `1224`, target su browser e wallet crypto.
+- **Actor**: Lazarus Group (DPRK), cluster *Famous Chollima* / *DeceptiveDevelopment*.
+- **Campaign**: *Contagious Interview* (aka *DEV#POPPER*).
+- **Commonly associated malware chain**: JS loader (*BeaverTail* family) → second-stage stealer/backdoor (*InvisibleFerret*).
 
-## Letture di riferimento (cerca i report pubblici aggiornati)
+> Attribution is based on TTPs and infrastructure consistent with the publicly documented campaign: fake interview + trojanized project, obfuscated JS loader that exfiltrates `process.env` and executes a second stage via `eval`, C2 port `1224`, targeting browsers and crypto wallets.
+
+## Reference reading (look for up-to-date public reports)
 
 - Palo Alto Unit 42 — *Contagious Interview* / BeaverTail & InvisibleFerret.
 - Securonix — *DEV#POPPER*.
 - ESET — *DeceptiveDevelopment*.
-- CISA/FBI — advisory su Lazarus / DPRK IT-worker & crypto theft.
-- Analisi community su npm trojanizzati e finti assignment di colloquio.
+- CISA/FBI — advisories on Lazarus / DPRK IT-worker & crypto theft.
+- Community analyses of trojanized npm packages and fake interview assignments.
 
-> Inserire qui i link specifici quando si pubblica il dossier (questo file è il punto unico per citazioni e fonti). Verificare sempre gli IOC contro fonti aggiornate: l'infrastruttura C2 può cambiare.
+> Add the specific links here when publishing the dossier (this file is the single point for citations and sources). Always verify IOCs against up-to-date sources: C2 infrastructure can change.
 
-## IOC di questo campione
+## IOCs for this sample
 
-Vedi [04-iocs.md](./04-iocs.md) e [`../iocs/`](../iocs/).
+See [04-iocs.md](./04-iocs.md) and [`../iocs/`](../iocs/).
 
-| Indicatore | Valore |
+| Indicator | Value |
 |---|---|
 | C2 | `216.250.251.187:1224` `/api/checkStatus` |
 | Campaign id | `now it time to get everything` |

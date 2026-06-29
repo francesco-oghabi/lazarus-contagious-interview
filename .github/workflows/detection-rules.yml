@@ -1,0 +1,73 @@
+name: detection-rules
+
+# Validate the detection rules (YARA + Sigma) and prove the YARA rule still
+# matches the known sample. This does NOT "fail on malware found": the repo
+# intentionally contains the sample. It fails only if a rule does not
+# compile/validate, or the YARA rule no longer detects the stage-1 loader.
+
+on:
+  push:
+    paths:
+      - 'rules/**'
+      - 'samples/**'
+      - '.github/workflows/detection-rules.yml'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  yara:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install YARA
+        run: sudo apt-get update && sudo apt-get install -y yara
+
+      - name: Compile rules (syntax check)
+        run: |
+          set -e
+          for r in rules/*.yar; do
+            echo "== compiling $r =="
+            yarac "$r" "/tmp/$(basename "$r").compiled"
+          done
+          echo "✅ all YARA rules compile"
+
+      - name: Detection test against known stage-1 sample
+        run: |
+          set -e
+          target="samples/stage1/auth_js_payload.js.txt"
+          out="$(yara rules/lazarus_chainflip_loader.yar "$target" || true)"
+          echo "$out"
+          if echo "$out" | grep -q "Lazarus_ContagiousInterview_ChainFlip_Loader"; then
+            echo "✅ rule still detects the known stage-1 sample"
+          else
+            echo "❌ rule no longer detects the known sample"
+            exit 1
+          fi
+
+  sigma:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install sigma-cli
+        run: pip install sigma-cli
+
+      - name: Validate Sigma rules (syntax + structure)
+        run: |
+          set -e
+          shopt -s nullglob
+          rules=(rules/*.sigma.yml rules/*.sigma.yaml)
+          if [ ${#rules[@]} -eq 0 ]; then
+            echo "no Sigma rules found"; exit 1
+          fi
+          for r in "${rules[@]}"; do
+            echo "== checking $r =="
+            sigma check "$r"
+          done
+          echo "✅ all Sigma rules valid"

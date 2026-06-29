@@ -1,28 +1,30 @@
-# 06 — Bonifica & Prevenzione
+<!-- 🇬🇧 English (default) · 🇮🇹 Italiano: 06-remediation.it.md -->
 
-## Se hai eseguito il progetto (anche una sola volta)
+# 06 — Remediation & Prevention
 
-Tratta la macchina come **compromessa**. `eval` da remoto significa che non hai garanzie su cosa sia stato eseguito.
+## If you ran the project (even just once)
 
-1. **Isola** subito la macchina dalla rete.
-2. **Blocca** in firewall/EDR l'IP `216.250.251.187` e la porta `1224` (vedi [`../iocs/network.txt`](../iocs/network.txt)).
-3. **Ruota tutte le credenziali** presenti nell'ambiente al momento dell'esecuzione:
-   - password DB / `MONGO_URI`, `JWT_SECRET`;
-   - token API, chiavi cloud (AWS/GCP/Azure), token CI/CD;
-   - chiavi SSH, token Git/PAT.
-4. **Browser**: cambia le password dei tuoi account e **revoca tutte le sessioni** (logout globale) — i cookie rubati bypassano l'MFA finché le sessioni restano valide.
-5. **Wallet crypto**: considera le seed/chiavi compromesse. Genera **nuovi wallet su una macchina pulita** e sposta i fondi. Non riusare le stesse seed.
-6. **Persistenza**: controlla cron job, servizi, voci di avvio, processi `node`/`python` anomali, pacchetti npm/pip installati di recente.
-7. **Reinstalla il sistema** da zero quando possibile.
+Treat the machine as **compromised**. Remote `eval` means you have no guarantees about what was executed.
 
-## Prevenzione
+1. **Isolate** the machine from the network immediately.
+2. **Block** the IP `216.250.251.187` and port `1224` at the firewall/EDR (see [`../iocs/network.txt`](../iocs/network.txt)).
+3. **Rotate all credentials** present in the environment at the time of execution:
+   - DB passwords / `MONGO_URI`, `JWT_SECRET`;
+   - API tokens, cloud keys (AWS/GCP/Azure), CI/CD tokens;
+   - SSH keys, Git tokens/PAT.
+4. **Browser**: change the passwords of your accounts and **revoke all sessions** (global logout) — stolen cookies bypass MFA as long as the sessions remain valid.
+5. **Crypto wallets**: consider the seeds/keys compromised. Generate **new wallets on a clean machine** and move the funds. Do not reuse the same seeds.
+6. **Persistence**: check cron jobs, services, startup entries, anomalous `node`/`python` processes, recently installed npm/pip packages.
+7. **Reinstall the system** from scratch whenever possible.
 
-- **Non eseguire** *coding assignment* / take-home test di colloqui non verificati su macchine personali o di lavoro. Usa una **VM usa-e-getta**, senza credenziali, con rete monitorata.
-- Diffida di repo che insistono per **avviare un server/app** "per vedere se funziona".
-- In code review attiva il **word-wrap** e cerca: `eval`, `Function(`, blob base64, `_0x…`, `child_process`, `require('os')`, beacon HTTP — specie **in fondo** ai file.
-- Esegui scansione con le regole in [`../rules/`](../rules/) su repo e dipendenze prima dell'esecuzione.
-- Tieni i wallet crypto su dispositivi/hardware separati dalla macchina di sviluppo.
+## Prevention
 
-## Neutralizzazione del campione (se devi conservare il repo)
+- **Do not run** unverified interview *coding assignments* / take-home tests on personal or work machines. Use a **disposable VM**, with no credentials, on a monitored network.
+- Be wary of repos that insist on **starting a server/app** "to see if it works."
+- During code review, enable **word-wrap** and look for: `eval`, `Function(`, base64 blobs, `_0x…`, `child_process`, `require('os')`, HTTP beacons — especially **at the bottom** of files.
+- Run a scan with the rules in [`../rules/`](../rules/) on repos and dependencies before execution.
+- Keep crypto wallets on devices/hardware separate from the development machine.
 
-L'unico componente da rimuovere nel sorgente è il blob alla **riga 17** di `routes/api/auth.js` (tutto ciò che segue `login,` ... `);` fino a prima di `module.exports`). La seconda fase risiede sul C2 e non è presente nei file.
+## Neutralizing the sample (if you need to keep the repo)
+
+The only component to remove in the source is the blob at **line 17** of `routes/api/auth.js` (everything that follows `login,` ... `);` up to just before `module.exports`). The second stage resides on the C2 and is not present in the files.

@@ -1,10 +1,10 @@
-<!-- 🇬🇧 English (default) · 🇮🇹 Italiano: 02-stage1-loader.it.md -->
+<!-- 🇮🇹 Italiano · 🇬🇧 English: 02-stage1-loader.md -->
 
-# 02 — Stage 1: the loader in `routes/api/auth.js`
+# 02 — Livello 1: il loader in `routes/api/auth.js`
 
-## Where it hides
+## Dove si nasconde
 
-The payload is appended to the end of an apparently normal Express routing file. Lines 1–16 are legitimate code (login + validation). At **line 17**, after **hundreds of whitespace characters** that push the code off-screen, sits an `obfuscator.io`-style obfuscated blob (`_0x…` variables, rotated string array, hexadecimal indices). Right after it, `module.exports = router;`.
+Il payload è appeso in fondo a un file di routing Express apparentemente normale. Le righe 1–16 sono codice legittimo (login + validazione). Alla **riga 17**, dopo **centinaia di spazi bianchi** che spingono il codice fuori dallo schermo, c'è un blob offuscato in stile `obfuscator.io` (variabili `_0x…`, array di stringhe ruotato, indici esadecimali). Subito dopo, `module.exports = router;`.
 
 ```js
 router.post('/', [...], login);
@@ -12,11 +12,11 @@ router.post('/', [...], login);
 module.exports = router;
 ```
 
-The forced indentation is an anti-review technique: in a diff or in an editor without word-wrap the line looks empty.
+L'indentazione forzata è una tecnica anti-review: in un diff o in un editor senza word-wrap la riga sembra vuota.
 
-## What it does — deobfuscated
+## Cosa fa — deoffuscato
 
-Readable reconstruction of the blob:
+Ricostruzione leggibile del blob:
 
 ```js
 const os = require('os');
@@ -64,29 +64,29 @@ try {
 } catch (e) { console.error(e); process.exit(1); }
 ```
 
-## Decoded strings
+## Stringhe decodificate
 
-| Obfuscated (base64) | Real |
+| Offuscato (base64) | Reale |
 |---|---|
 | `aHR0cDovLzIxNi4yNTAuMjUxLjE4NzoxMjI0L2FwaS9jaGVja1N0YXR1cw==` | `hxxp://216[.]250[.]251[.]187:1224/api/checkStatus` |
 | `bm93IGl0IHRpbWUgdG8gZ2V0IGV2ZXJ5dGhpbmc=` (`tid`) | `now it time to get everything` |
 
-The `tid` is the operator's **campaign identifier**.
+Il `tid` è l'**identificativo di campagna** dell'operatore.
 
-## When it fires
+## Quando parte
 
-The blob is **top-level** module code: it runs when the router is `require()`d, that is **at server startup** (`node server.js`). No one needs to call the login endpoint — just starting the app once is enough.
+Il blob è codice **top-level** del modulo: viene eseguito al `require()` del router, cioè **all'avvio del server** (`node server.js`). Non serve che nessuno chiami l'endpoint di login — basta avviare l'app una volta.
 
-## Data exfiltrated in this stage
+## Dati esfiltrati in questa fase
 
-- `os.hostname()`, OS type/release/platform, MAC address;
-- **the entire `process.env`** → on a development machine this typically includes `JWT_SECRET`, `MONGO_URI` (DB credentials), API tokens, cloud keys, CI/CD secrets — all **in cleartext over unencrypted HTTP**.
+- `os.hostname()`, tipo/release/piattaforma OS, indirizzo MAC;
+- **l'intero `process.env`** → su una macchina di sviluppo include tipicamente `JWT_SECRET`, `MONGO_URI` (credenziali DB), token API, chiavi cloud, segreti CI/CD — tutto **in chiaro su HTTP non cifrato**.
 
-## Why it is effective (defense evasion)
+## Perché è efficace (defense evasion)
 
-- `obfuscator.io` obfuscation (array rotated at runtime until a checksum matches);
-- URL and `tid` in base64;
-- payload hidden by off-screen indentation;
-- the second stage is never written to disk → little material for static AVs.
+- offuscamento `obfuscator.io` (array ruotato a runtime fino a far quadrare un checksum);
+- URL e `tid` in base64;
+- payload nascosto da indentazione fuori schermo;
+- la seconda fase non è mai su disco → poco materiale per gli AV statici.
 
-Sample isolated and *defanged*: [`samples/stage1/`](../samples/stage1/).
+Sample isolato e *defanged*: [`samples/stage1/`](../samples/stage1/).

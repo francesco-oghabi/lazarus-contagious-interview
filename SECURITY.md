@@ -1,27 +1,29 @@
+<!-- 🇬🇧 English (default) · 🇮🇹 Italiano: SECURITY.it.md -->
+
 # Security & Safe-handling
 
-## Scopo
+## Purpose
 
-Questo repository è un **dossier di threat intelligence a fini difensivi ed educativi**. Documenta un campione reale della campagna **Lazarus / Contagious Interview** per consentire detection, attribuzione e bonifica.
+This repository is a **threat intelligence dossier for defensive and educational purposes**. It documents a real sample of the **Lazarus / Contagious Interview** campaign to enable detection, attribution, and remediation.
 
-## ⚠️ Il codice è ostile
+## ⚠️ The code is hostile
 
-- Il file `routes/api/auth.js` contiene un **loader malevolo** che parte al solo avvio del server.
-- **Non eseguire** `npm install`, `npm run dev`, `node server.js` o qualsiasi build su una macchina reale.
-- Analizzare esclusivamente in **VM isolata**, snapshot revertibile, **senza credenziali**, rete monitorata o staccata.
-- I campioni in [`samples/`](./samples/) sono neutralizzati per isolamento (rinominati `.txt`): non rinominarli in `.js`, non eseguirli, non importarli.
+- The `routes/api/auth.js` file contains a **malicious loader** that runs on server startup alone.
+- **Do not run** `npm install`, `npm run dev`, `node server.js`, or any build on a real machine.
+- Analyze exclusively in an **isolated VM**, with revertible snapshots, **without credentials**, and with the network monitored or disconnected.
+- The samples in [`samples/`](./samples/) are neutralized for containment (renamed to `.txt`): do not rename them to `.js`, do not run them, do not import them.
 
-## Uso consentito
+## Permitted use
 
 - Detection engineering (YARA/Sigma/Suricata in [`rules/`](./rules/)).
-- Threat hunting con gli IOC in [`iocs/`](./iocs/).
-- Formazione e awareness su attacchi "finto colloquio".
+- Threat hunting with the IOCs in [`iocs/`](./iocs/).
+- Training and awareness on "fake interview" attacks.
 
-## Uso non consentito
+## Prohibited use
 
-- Riutilizzo del codice malevolo per attaccare sistemi.
-- Esecuzione su sistemi di produzione o macchine con dati/credenziali reali.
+- Reuse of the malicious code to attack systems.
+- Execution on production systems or machines with real data/credentials.
 
-## Segnalazioni
+## Reporting
 
-Se trovi questo campione attivo o un'esca correlata, segnala al tuo CERT/CSIRT nazionale e ruota le credenziali esposte (vedi [docs/06-remediation.md](./docs/06-remediation.md)).
+If you find this sample active or a related lure, report it to your national CERT/CSIRT and rotate the exposed credentials (see [docs/06-remediation.md](./docs/06-remediation.md)).

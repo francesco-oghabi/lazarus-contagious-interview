@@ -2,7 +2,7 @@
 
 > # ⛔ PERICOLO — NON INSTALLARE NÉ ESEGUIRE QUESTO PROGETTO
 > **Il codice in questo repository è malware reale.** Non eseguire `npm install`, `npm run dev`, `node server.js` né alcun passo di build/install su una macchina reale: il payload parte al solo avvio del server, senza ulteriore interazione.
-> Analizzare **solo** in VM isolata (snapshot revertibile, senza credenziali, rete monitorata o staccata). I campioni in [`samples/`](./samples/) sono isolati come `.txt` — non rinominarli né eseguirli. Vedi [SECURITY.md](./SECURITY.md).
+> Analizzare **solo** in VM isolata (snapshot revertibile, senza credenziali, rete monitorata o staccata). I campioni in [`samples/`](./samples/) sono isolati come `.txt` — non rinominarli né eseguirli. Vedi [SECURITY.it.md](./SECURITY.it.md).
 
 ---
 
@@ -41,13 +41,13 @@ beacon ogni 5s al C2 ──────────► eval(message) dal C2
 
 | Doc | Contenuto |
 |---|---|
-| [docs/01-overview.md](./docs/01-overview.md) | Campagna, contesto (Contagious Interview), TTP, schema dell'attacco |
-| [docs/02-stage1-loader.md](./docs/02-stage1-loader.md) | Analisi del loader (offuscato → deoffuscato) |
-| [docs/03-stage2-stealer.md](./docs/03-stage2-stealer.md) | Seconda fase (`eval`/InvisibleFerret), comportamento |
-| [docs/04-iocs.md](./docs/04-iocs.md) | Indicatori di compromissione (spiegati) |
-| [docs/05-detection.md](./docs/05-detection.md) | Detection: YARA, Sigma, Suricata, hunting |
-| [docs/06-remediation.md](./docs/06-remediation.md) | Bonifica e prevenzione |
-| [docs/07-references.md](./docs/07-references.md) | Fonti e attribuzione |
+| [docs/01-overview.it.md](./docs/01-overview.it.md) | Campagna, contesto (Contagious Interview), TTP, schema dell'attacco |
+| [docs/02-stage1-loader.it.md](./docs/02-stage1-loader.it.md) | Analisi del loader (offuscato → deoffuscato) |
+| [docs/03-stage2-stealer.it.md](./docs/03-stage2-stealer.it.md) | Seconda fase (`eval`/InvisibleFerret), comportamento |
+| [docs/04-iocs.it.md](./docs/04-iocs.it.md) | Indicatori di compromissione (spiegati) |
+| [docs/05-detection.it.md](./docs/05-detection.it.md) | Detection: YARA, Sigma, Suricata, hunting |
+| [docs/06-remediation.it.md](./docs/06-remediation.it.md) | Bonifica e prevenzione |
+| [docs/07-references.it.md](./docs/07-references.it.md) | Fonti e attribuzione |
 
 ## 🗂️ Artefatti
 
@@ -56,9 +56,10 @@ beacon ogni 5s al C2 ──────────► eval(message) dal C2
 | [`iocs/`](./iocs/) | IOC machine-readable: `iocs.csv`, `iocs.json` (STIX 2.1), `network.txt` (blocklist) |
 | [`rules/`](./rules/) | Regole di detection: YARA, Sigma, Suricata |
 | [`samples/`](./samples/) | Payload isolato e *defanged* + README-esca originale come evidenza |
+| [`posts/`](./posts/) | Post LinkedIn pronti (EN/IT) su questo dossier |
 
 ---
 
 ## ⚖️ Disclaimer
 
-Materiale pubblicato a **soli fini difensivi, di ricerca ed educativi** per consentire detection e bonifica. Il codice malevolo è incluso esclusivamente in forma neutralizzata/isolata in `samples/`. Gli autori non sono responsabili di un uso improprio. Vedi [SECURITY.md](./SECURITY.md).
+Materiale pubblicato a **soli fini difensivi, di ricerca ed educativi** per consentire detection e bonifica. Il codice malevolo è incluso esclusivamente in forma neutralizzata/isolata in `samples/`. Gli autori non sono responsabili di un uso improprio. Vedi [SECURITY.it.md](./SECURITY.it.md).

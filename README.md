@@ -56,6 +56,7 @@ beacons every 5s to C2 ────────► eval(message) from C2
 | [`iocs/`](./iocs/) | Machine-readable IOCs: `iocs.csv`, `iocs.json` (STIX 2.1), `network.txt` (blocklist) |
 | [`rules/`](./rules/) | Detection rules: YARA, Sigma, Suricata |
 | [`samples/`](./samples/) | Isolated, defanged payload + original lure README as evidence |
+| [`posts/`](./posts/) | Ready-to-publish LinkedIn posts (EN/IT) about this dossier |
 
 ---
 

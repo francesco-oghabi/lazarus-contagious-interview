@@ -1,15 +1,17 @@
+<!-- 🇬🇧 English (default) · 🇮🇹 Italiano: README.it.md -->
+
 # samples/ — Evidence (isolated)
 
-> ⚠️ **Contiene codice malevolo a scopo di analisi.** I file qui sono **neutralizzati per isolamento**: rinominati in `.txt` così da **non essere eseguibili né importabili** da Node/bundler. Non rinominare in `.js` e non eseguire. Solo VM isolata.
+> ⚠️ **Contains malicious code for analysis purposes.** The files here are **neutralized through isolation**: renamed to `.txt` so they are **neither executable nor importable** by Node/bundler. Do not rename to `.js` and do not run. Isolated VM only.
 
-## Contenuto
+## Contents
 
-| File | Descrizione |
+| File | Description |
 |---|---|
-| [`stage1/auth_js_payload.js.txt`](./stage1/auth_js_payload.js.txt) | Il loader del Livello 1 estratto dalla riga 17 di `routes/api/auth.js`. Offuscato, intatto a fini di firma/analisi. Inerte come `.txt`. |
-| [`lure/README.original.md`](./lure/README.original.md) | Il README-esca originale del finto progetto "ChainFlip Labs", conservato come evidenza. |
+| [`stage1/auth_js_payload.js.txt`](./stage1/auth_js_payload.js.txt) | The Stage 1 loader extracted from line 17 of `routes/api/auth.js`. Obfuscated, kept intact for signature/analysis purposes. Inert as `.txt`. |
+| [`lure/README.original.md`](./lure/README.original.md) | The original lure README of the fake "ChainFlip Labs" project, preserved as evidence. |
 
-## Note
+## Notes
 
-- Il **Livello 2** (stealer del browser/wallet) **non è incluso**: viene consegnato dal C2 a runtime via `eval` e non è presente nel repo originale. Vedi [`../docs/03-stage2-stealer.md`](../docs/03-stage2-stealer.md).
-- Le stringhe base64 nel payload (URL C2, `tid`) sono mantenute integre perché costituiscono gli **indicatori/firme**; sono dati inerti. Decodifiche in [`../docs/04-iocs.md`](../docs/04-iocs.md).
+- **Stage 2** (the browser/wallet stealer) **is not included**: it is delivered by the C2 at runtime via `eval` and is not present in the original repo. See [`../docs/03-stage2-stealer.md`](../docs/03-stage2-stealer.md).
+- The base64 strings in the payload (C2 URL, `tid`) are kept intact because they constitute the **indicators/signatures**; they are inert data. Decodings in [`../docs/04-iocs.md`](../docs/04-iocs.md).

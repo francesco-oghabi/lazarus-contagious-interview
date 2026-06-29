@@ -1,45 +1,47 @@
-# 03 — Livello 2: l'info-stealer (consegnato via `eval`)
+<!-- 🇬🇧 English (default) · 🇮🇹 Italiano: 03-stage2-stealer.it.md -->
 
-## Perché non è nel repo
+# 03 — Stage 2: the info-stealer (delivered via `eval`)
 
-La seconda fase **non è memorizzata nel repository**: per questo non la si trova "in chiaro" tra i file. Viene scaricata a runtime dal C2 nel campo `message` della risposta JSON ed eseguita con `eval(message)` (vedi [02-stage1-loader.md](./02-stage1-loader.md)).
+## Why it is not in the repo
 
-Conseguenze:
-- **esecuzione di codice arbitrario** controllata dall'operatore in tempo reale;
-- payload **aggiornabile a ogni beacon** (ogni 5 s) e diverso per vittima;
-- **nessun artefatto su disco** → bassa rilevabilità statica; serve detection comportamentale/di rete.
+The second stage is **not stored in the repository**: this is why you will not find it "in the clear" among the files. It is downloaded at runtime from the C2 in the `message` field of the JSON response and executed with `eval(message)` (see [02-stage1-loader.md](./02-stage1-loader.md)).
 
-## Comportamento atteso (famiglia InvisibleFerret / stealer JS)
+Consequences:
+- **arbitrary code execution** controlled by the operator in real time;
+- payload **updatable on every beacon** (every 5 s) and different per victim;
+- **no on-disk artifact** → low static detectability; behavioral/network detection is required.
 
-Nelle infezioni note di questa campagna la seconda fase effettua tipicamente:
+## Expected behavior (InvisibleFerret family / JS stealer)
 
-### Furto dati browser (Chromium: Chrome, Brave, Edge, Opera, Chrome Beta…)
-- **password salvate** (`Login Data`);
-- **cookie di sessione** → consente l'hijack di account già loggati, **bypassando l'MFA**;
-- **autofill / dati carte**;
-- **chiave di decifratura del DB** (`Local State`, AES key protetta da DPAPI/keychain).
+In the known infections of this campaign, the second stage typically performs:
 
-### Furto wallet crypto
-- estensioni browser: **MetaMask**, **Phantom**, e altre dei principali wallet;
-- file/keystore di wallet locali.
+### Browser data theft (Chromium: Chrome, Brave, Edge, Opera, Chrome Beta…)
+- **saved passwords** (`Login Data`);
+- **session cookies** → enables hijacking of already-logged-in accounts, **bypassing MFA**;
+- **autofill / card data**;
+- **DB decryption key** (`Local State`, AES key protected by DPAPI/keychain).
 
-### Furto credenziali e segreti
-- keychain / portachiavi di sistema;
-- file di configurazione, chiavi SSH, token cloud/CI.
+### Crypto wallet theft
+- browser extensions: **MetaMask**, **Phantom**, and others from the major wallets;
+- local wallet files/keystores.
 
-### Backdoor / fasi successive
-- alcune varianti scaricano ulteriori strumenti (es. keylogger Python, modulo di persistenza, RAT) e mantengono accesso remoto.
+### Credential and secret theft
+- system keychain / keyring;
+- configuration files, SSH keys, cloud/CI tokens.
 
-### Esfiltrazione
-- invio dei dati raccolti verso l'infrastruttura dell'operatore (stesso attore del Livello 1).
+### Backdoor / later stages
+- some variants download additional tooling (e.g. Python keylogger, persistence module, RAT) and maintain remote access.
 
-## In sintesi
+### Exfiltration
+- sending the collected data to the operator's infrastructure (same actor as Stage 1).
 
-| Livello | Ruolo | Dati |
+## In summary
+
+| Stage | Role | Data |
 |---|---|---|
 | **1** (in repo) | foothold + downloader | host info, `process.env` |
-| **2** (via eval) | info-stealer | password/cookie browser, wallet, keychain, file sensibili |
+| **2** (via eval) | info-stealer | browser passwords/cookies, wallets, keychain, sensitive files |
 
-Il Livello 1 prende piede e ruba i segreti d'ambiente; il Livello 2 svuota browser e wallet.
+Stage 1 gains a foothold and steals environment secrets; Stage 2 drains browsers and wallets.
 
-> ⚠️ Poiché la seconda fase è dinamica, il dettaglio esatto può variare tra le vittime e nel tempo. Il comportamento sopra riflette i campioni pubblicamente documentati della stessa campagna (vedi [07-references.md](./07-references.md)) e va trattato come **descrizione della capacità**, non come dump del payload specifico.
+> ⚠️ Because the second stage is dynamic, the exact detail may vary between victims and over time. The behavior above reflects the publicly documented samples of the same campaign (see [07-references.md](./07-references.md)) and should be treated as a **capability description**, not as a dump of the specific payload.

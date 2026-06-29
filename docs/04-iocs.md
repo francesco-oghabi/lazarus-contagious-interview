@@ -1,50 +1,52 @@
-# 04 — Indicatori di compromissione (IOC)
+<!-- 🇬🇧 English (default) · 🇮🇹 Italiano: 04-iocs.it.md -->
 
-> Indicatori *defanged* per la lettura. Versioni machine-readable "live" per import/blocklist in [`../iocs/`](../iocs/).
+# 04 — Indicators of Compromise (IOCs)
 
-## Rete
+> *Defanged* indicators for reading. Machine-readable "live" versions for import/blocklist in [`../iocs/`](../iocs/).
 
-| Tipo | Valore (defanged) | Note |
+## Network
+
+| Type | Value (defanged) | Notes |
 |---|---|---|
-| C2 URL | `hxxp://216[.]250[.]251[.]187:1224/api/checkStatus` | Endpoint di beacon/consegna stage 2 |
+| C2 URL | `hxxp://216[.]250[.]251[.]187:1224/api/checkStatus` | Beacon / stage 2 delivery endpoint |
 | C2 IP | `216[.]250[.]251[.]187` | |
-| Porta | `1224` | Porta C2 caratteristica della campagna *Contagious Interview* |
+| Port | `1224` | C2 port characteristic of the *Contagious Interview* campaign |
 | URI path | `/api/checkStatus` | |
-| Query params | `sysInfo`, `processInfo`, `tid`, `sysId` | Schema dei parametri del beacon |
-| User-Agent | default di `fetch`/`undici` (Node) | Beacon da processo `node`, non da browser |
-| Cadenza | beacon ogni **5000 ms** | `setInterval(..., 0x1388)` |
+| Query params | `sysInfo`, `processInfo`, `tid`, `sysId` | Beacon parameter schema |
+| User-Agent | default of `fetch`/`undici` (Node) | Beacon from `node` process, not from a browser |
+| Cadence | beacon every **5000 ms** | `setInterval(..., 0x1388)` |
 
-## Host / file
+## Host / files
 
-| Tipo | Valore |
+| Type | Value |
 |---|---|
-| File infetto | `routes/api/auth.js` (payload top-level in fondo, riga 17) |
+| Infected file | `routes/api/auth.js` (top-level payload at the bottom, line 17) |
 | Campaign id (`tid`) | `now it time to get everything` |
 | `tid` base64 | `bm93IGl0IHRpbWUgdG8gZ2V0IGV2ZXJ5dGhpbmc=` |
 | C2 URL base64 | `aHR0cDovLzIxNi4yNTAuMjUxLjE4NzoxMjI0L2FwaS9jaGVja1N0YXR1cw==` |
-| Tecnica | offuscamento `obfuscator.io` + base64 + `eval()` su risposta C2 |
-| Processo | `node` che apre connessioni in uscita verso `:1224` |
+| Technique | `obfuscator.io` obfuscation + base64 + `eval()` on C2 response |
+| Process | `node` opening outbound connections to `:1224` |
 
-## Stringhe/pattern utili per detection
+## Useful strings/patterns for detection
 
 ```
-eval(                              ← su variabile da risposta HTTP
-processInfo                        ← parametro di esfiltrazione process.env
-checkStatus                        ← path C2
-216.250.251.187                    ← IP C2
-1224                               ← porta C2
-aHR0cDovLzIxNi4yNTAuMjUxL          ← prefisso base64 dell'URL C2
-bm93IGl0IHRpbWUgdG8gZ2V0           ← prefisso base64 del tid
-_0x                                ← marker di offuscamento (basso valore da solo)
+eval(                              ← on a variable from the HTTP response
+processInfo                        ← process.env exfiltration parameter
+checkStatus                        ← C2 path
+216.250.251.187                    ← C2 IP
+1224                               ← C2 port
+aHR0cDovLzIxNi4yNTAuMjUxL          ← base64 prefix of the C2 URL
+bm93IGl0IHRpbWUgdG8gZ2V0           ← base64 prefix of the tid
+_0x                                ← obfuscation marker (low value on its own)
 ```
 
-## Falsi positivi noti (file PULITI in questo repo)
+## Known false positives (CLEAN files in this repo)
 
-| File | Perché sembra sospetto ma è pulito |
+| File | Why it looks suspicious but is clean |
 |---|---|
-| `socket/packet.js` | Costanti esadecimali = id eventi di gioco |
-| `client/src/components/decoration/WatermarkText.js` | Riga lunghissima = `path` SVG |
-| `client/src/components/logo/LogoWithText.js` | Riga lunghissima = `path` SVG |
-| `client/src/utils/interact.js`, `pages/ConnectWallet/` | Codice wallet legittimo (parte dell'esca, non malevolo) |
+| `socket/packet.js` | Hex constants = game event ids |
+| `client/src/components/decoration/WatermarkText.js` | Very long line = SVG `path` |
+| `client/src/components/logo/LogoWithText.js` | Very long line = SVG `path` |
+| `client/src/utils/interact.js`, `pages/ConnectWallet/` | Legitimate wallet code (part of the lure, not malicious) |
 
-Regole pronte all'uso: [05-detection.md](./05-detection.md) e [`../rules/`](../rules/).
+Ready-to-use rules: [05-detection.md](./05-detection.md) and [`../rules/`](../rules/).
