@@ -29,7 +29,8 @@ in-memory eval (no stage-2 on disk) + base64 + off-screen indentation + benign-l
 Hunting one-liner for your repos / npm deps:
 `grep -rIlE "processInfo|checkStatus|216\.250\.251\.187" .`
 
-Full bilingual (EN/IT) write-up, deobfuscated code, IOCs and rules — link in the comments. 🔗
+Full bilingual (EN/IT) write-up, deobfuscated code, IOCs and rules — open-source dossier:
+🔗 https://github.com/francesco-oghabi/lazarus-contagious-interview/
 
 What other detection angles would you add? 👇
 

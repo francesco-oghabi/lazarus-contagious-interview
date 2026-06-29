@@ -29,7 +29,8 @@ eval in memoria (nessuno stage-2 su disco) + base64 + indentazione fuori schermo
 One-liner di hunting per i tuoi repo / dipendenze npm:
 `grep -rIlE "processInfo|checkStatus|216\.250\.251\.187" .`
 
-Analisi completa bilingue (EN/IT), codice deoffuscato, IOC e regole — link nei commenti. 🔗
+Analisi completa bilingue (EN/IT), codice deoffuscato, IOC e regole — dossier open-source:
+🔗 https://github.com/francesco-oghabi/lazarus-contagious-interview/
 
 Quali altri angoli di detection aggiungereste? 👇
 
