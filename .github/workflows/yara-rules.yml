@@ -1,0 +1,45 @@
+name: yara-rules
+
+# Validate the YARA detection rules and prove they still match the known sample.
+# This does NOT "fail on malware found": the repo intentionally contains the sample.
+# It fails only if a rule does not compile, or no longer detects the stage-1 loader.
+
+on:
+  push:
+    paths:
+      - 'rules/**'
+      - 'samples/**'
+      - '.github/workflows/yara-rules.yml'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install YARA
+        run: sudo apt-get update && sudo apt-get install -y yara
+
+      - name: Compile rules (syntax check)
+        run: |
+          set -e
+          for r in rules/*.yar; do
+            echo "== compiling $r =="
+            yarac "$r" "/tmp/$(basename "$r").compiled"
+          done
+          echo "✅ all YARA rules compile"
+
+      - name: Detection test against known stage-1 sample
+        run: |
+          set -e
+          target="samples/stage1/auth_js_payload.js.txt"
+          out="$(yara rules/lazarus_chainflip_loader.yar "$target" || true)"
+          echo "$out"
+          if echo "$out" | grep -q "Lazarus_ContagiousInterview_ChainFlip_Loader"; then
+            echo "✅ rule still detects the known stage-1 sample"
+          else
+            echo "❌ rule no longer detects the known sample"
+            exit 1
+          fi
